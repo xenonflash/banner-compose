@@ -1,17 +1,16 @@
-<template>
+<template >
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <banner-composer/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import BannerComposer from './components/banner-compose'
+import '../node_modules/element-ui/lib/theme-chalk/index.css'
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    BannerComposer
   }
 }
 </script>
@@ -21,8 +20,5 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
