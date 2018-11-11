@@ -7,8 +7,8 @@ export default [
         {
           type: "button",
           uuid: "dfr98345",
-          top: "50%",
-          left: "50%",
+          top: "50px",
+          left: "50px",
           props: {
             className: "banner-btn",
             css: "color: red"
@@ -18,8 +18,8 @@ export default [
         {
           type: "text",
           uuid: "sdf32343f",
-          top: "30%",
-          left: "70%",
+          top: "30px",
+          left: "70px",
           props: {
             className: "banner-text",
             style: "color: blue"
@@ -34,8 +34,8 @@ export default [
         {
           type: 'button',
           uuid: "dfrs234we34",
-          top: "50%",
-          left: "50%",
+          top: "50px",
+          left: "50px",
           props: {
             className: "banner-btn",
             css: "color: green"
@@ -44,9 +44,9 @@ export default [
         },
         {
           type: 'text',
-          top: "50%",
+          top: "50px",
           uuid: "sdf9809wer",
-          left: "50%",
+          left: "50px",
           props: {
             className: "banner-text",
             style: "color: blue"
@@ -64,8 +64,8 @@ export default [
         {
           type: "button",
           uuid: "df324sr",
-          top: "20%",
-          left: "10%",
+          top: "20px",
+          left: "10px",
           props: {
             className: "banner-btn",
             css: "color: red"
@@ -74,9 +74,9 @@ export default [
         },
         {
           type: "text",
-          top: "30%",
+          top: "30px",
           uuid: "sd23423f",
-          left: "20%",
+          left: "20px",
           props: {
             className: "banner-text",
             style: "color: blue"
@@ -91,8 +91,8 @@ export default [
         {
           type: 'button',
           uuid: "dfrs234",
-          top: "30%",
-          left: "60%",
+          top: "30px",
+          left: "60px",
           props: {
             className: "banner-btn",
             css: "color: green"
@@ -101,9 +101,9 @@ export default [
         },
         {
           type: 'text',
-          top: "10%",
+          top: "10px",
           uuid: "sdf9809",
-          left: "50%",
+          left: "50px",
           props: {
             className: "banner-text",
             style: "color: blue"

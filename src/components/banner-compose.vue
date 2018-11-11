@@ -26,13 +26,13 @@
 
     el-col(:span="6").props-panel
       P selected: {{currEditingUUID}}
-      el-form
+      el-form(v-if="currNode")
         el-form-item(label="left")
-          el-input(size="small")
+          el-input(size="small", v-model="currNode.left")
         el-form-item(label="top")
-          el-input(size="small")
-        el-form-item(label="background")
-          el-input(size="small")
+          el-input(size="small", v-model="currNode.top")
+        el-form-item(label="css")
+          el-input(size="small", v-model="currNode.props.style")
         el-form-item(label="link")
           el-input(size="small")
 
@@ -50,6 +50,7 @@ import ElRadioGroup from 'element-ui/lib/radio-group'
 import ElRadio from 'element-ui/lib/radio'
 import screenData from './_screens.js'
 import Interact from 'interactjs'
+import _throttle from 'lodash/throttle'
 
 export default {
   name: "banner-compose",
@@ -86,6 +87,9 @@ export default {
     currScreen() {
       if (!this.screens.length) return {};
       return this.screens[this.currScreenIdx];
+    },
+    currNode() {
+      return this.findNode(this.currEditingUUID)
     }
   },
   mounted() {
@@ -126,8 +130,9 @@ export default {
             position: absolute;
             top: ${node.top};
             left: ${node.left};
+            padding: 20px;
             outline: 0;
-            z-index: ${zIndex}
+            z-index: ${zIndex};
           ` + node.props.style;
           // 类样式
           dom.className = node.props.className + " " + node.uuid;
@@ -178,19 +183,16 @@ export default {
       }
     },
     bindInteract(dom) {
+      const self = this
       Interact(dom).draggable({
-        onmove: function(e) {
-          const node = this.findNode(this.currEditingUUID)
-          node.top = node.top + dy
-          node.left = node.left + dx
-        }
-      }).resizable({
-        inertia: true,
-        onmove: function(e) {
-          console.log(e)
-        }
+        onmove: _throttle(function({ dx, dy }) {
+          const node = self.findNode(self.currEditingUUID)
+          node.top = parseFloat(node.top) + dy +'px'
+          node.left = parseFloat(node.left) + dx + 'px'
+        })
       })
     },
+    //根据 uuid 获取node
     findNode(nodeId) {
       function walk(node) {
         if (Array.isArray(node)) {
@@ -212,11 +214,15 @@ export default {
     }
   },
   watch: {
-    currScreen(val) {
-      if (Object.keys(val).length) {
-        this.getContent();
-      }
+    currScreen: {
+      handler: function (val) {
+        if (Object.keys(val).length) {
+          this.getContent();
+        }
+      },
+      deep: true
     },
+
     locale() {
       this.getContent();
     }
