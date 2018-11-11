@@ -25,7 +25,7 @@
         el-button(@click="addElemment('image')") add image
 
     el-col(:span="6").props-panel
-      P selected: {{currentEditingUUID}}
+      P selected: {{currEditingUUID}}
       el-form
         el-form-item(label="left")
           el-input(size="small")
@@ -49,6 +49,7 @@ import ElSwitch from 'element-ui/lib/switch'
 import ElRadioGroup from 'element-ui/lib/radio-group'
 import ElRadio from 'element-ui/lib/radio'
 import screenData from './_screens.js'
+import Interact from 'interactjs'
 
 export default {
   name: "banner-compose",
@@ -56,7 +57,7 @@ export default {
     return {
       showDialog: false,
       locale: "en",
-      currentEditingUUID: '',
+      currEditingUUID: '',
       screens: screenData,
       screenResoution: {
         width: 1920,
@@ -132,9 +133,16 @@ export default {
           dom.className = node.props.className + " " + node.uuid;
           // 设置interactjs
           parentNode.appendChild(dom);
-          dom.addEventListener('click', e => {
-            this.currentEditingUUID = node.uuid
+
+          // 添加事件
+          dom.addEventListener('mousedown', e => {
+            this.currEditingUUID = node.uuid
+            console.log(this.findNode(node.uuid))
           })
+
+          // 初始化拖拽
+          this.bindInteract(dom)
+
 
           if (Array.isArray(node.children) && node.children.length > 0) {
             _render(dom, node);
@@ -150,9 +158,6 @@ export default {
         this.currScreen,
         this.locale
       );
-    },
-    close(status) {
-      !status && (this.showDialog = false);
     },
     init() {
       setTimeout(() => {
@@ -170,6 +175,39 @@ export default {
       }
       if (elem) {
         this.screens[this.currIdx].content.push(elem);
+      }
+    },
+    bindInteract(dom) {
+      Interact(dom).draggable({
+        onmove: function(e) {
+          const node = this.findNode(this.currEditingUUID)
+          node.top = node.top + dy
+          node.left = node.left + dx
+        }
+      }).resizable({
+        inertia: true,
+        onmove: function(e) {
+          console.log(e)
+        }
+      })
+    },
+    findNode(nodeId) {
+      function walk(node) {
+        if (Array.isArray(node)) {
+          for (var  j =0; j < node.length; j++) {
+            var t = walk(node[j])
+            if (t) {return t}
+          }
+        } else if (node.uuid == nodeId) {
+          return node
+        } else if (Array.isArray(node.children)) {
+          return walk(node.children)
+        }
+      }
+      for (let i = 0; i < this.screens.length; i++) {
+        const currLocaleScreen = this.screens[i][this.locale]
+        const t = walk(currLocaleScreen)
+        if (t) { return t }
       }
     }
   },

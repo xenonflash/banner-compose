@@ -6,7 +6,7 @@ export default [
       children: [
         {
           type: "button",
-          uuid: "dfr",
+          uuid: "dfr98345",
           top: "50%",
           left: "50%",
           props: {
@@ -17,7 +17,7 @@ export default [
         },
         {
           type: "text",
-          uuid: "sdf",
+          uuid: "sdf32343f",
           top: "30%",
           left: "70%",
           props: {
@@ -33,7 +33,7 @@ export default [
       children: [
         {
           type: 'button',
-          uuid: "dfrs234",
+          uuid: "dfrs234we34",
           top: "50%",
           left: "50%",
           props: {
@@ -45,7 +45,7 @@ export default [
         {
           type: 'text',
           top: "50%",
-          uuid: "sdf9809",
+          uuid: "sdf9809wer",
           left: "50%",
           props: {
             className: "banner-text",
@@ -63,7 +63,7 @@ export default [
       children: [
         {
           type: "button",
-          uuid: "dfr",
+          uuid: "df324sr",
           top: "20%",
           left: "10%",
           props: {
@@ -75,7 +75,7 @@ export default [
         {
           type: "text",
           top: "30%",
-          uuid: "sdf",
+          uuid: "sd23423f",
           left: "20%",
           props: {
             className: "banner-text",
