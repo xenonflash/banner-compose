@@ -20,9 +20,9 @@
           :style="`height:${virtualScreenHeight}px; background: url(${currScreen[locale].src}) no-repeat center/cover`"
         )
       .operation
-        el-button(@click="addElemment('button')") add button
-        el-button(@click="addElemment('text')") add text
-        el-button(@click="addElemment('image')") add image
+        el-button(@click="addElement('button')") add button
+        el-button(@click="addElement('text')") add text
+        el-button(@click="addElement('image')") add image
 
     el-col(:span="6").props-panel
       P selected: {{currEditingUUID}}
@@ -148,7 +148,6 @@ export default {
           // 初始化拖拽
           this.bindInteract(dom)
 
-
           if (Array.isArray(node.children) && node.children.length > 0) {
             _render(dom, node);
           }
@@ -168,18 +167,48 @@ export default {
       setTimeout(() => {
         this.getVirtualScreenHeight();
         this.getContent();
+        const self = this
+        this.$refs.virtualScreen.addEventListener('click', function(e) {
+          if (e.target.className === 'virtual-screen') {
+            self.currEditingUUID = ''
+          }
+        })
       }, 100);
+    },
+    removeElement(uuid) {
+
     },
     addElement(type) {
       let elem;
+      const uuid = Math.random().toString().replace('0.','')
       switch (type) {
         case "button":
+          elem = {
+            type: "button",
+            uuid,
+            top: "100px",
+            left: "200px",
+            props: {
+              className: "banner-btn",
+              css: "color: blue"
+            },
+            children: "请输入按钮文字"
+          }
+          break
+        case "text":
           elem = {};
-        case "input":
-          elem = {};
+        case 'image':
+          elem = {}
       }
       if (elem) {
-        this.screens[this.currIdx].content.push(elem);
+        if (this.currNode ) {
+          if (typeof this.currNode.children === 'string') {
+            return alert('cannot add element to ' + this.currNode.type)
+          }
+          this.currNode.children.push(elem)
+        } else if (this.currScreen) {
+          this.currScreen[this.locale].children.push(elem)
+        }
       }
     },
     bindInteract(dom) {
