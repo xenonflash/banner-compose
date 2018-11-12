@@ -26,15 +26,18 @@
 
     el-col(:span="6").props-panel
       P selected: {{currEditingUUID}}
-      el-form(v-if="currNode")
-        el-form-item(label="left")
-          el-input(size="small", v-model="currNode.left")
-        el-form-item(label="top")
-          el-input(size="small", v-model="currNode.top")
-        el-form-item(label="css")
-          el-input(size="small", v-model="currNode.props.style")
-        el-form-item(label="link")
-          el-input(size="small")
+      template(v-if="currScreen")
+        .form-item
+          span bg type
+          el-input(size="small", v-model="currScreen.bgType")
+        .form-item
+          span src
+          el-input(size="small", v-model="currScreen[locale].src")
+      hr
+      template(v-if="currNode")
+        .form-item(v-for="(value, key) in propertyForm")
+          span {{key}}
+          el-input(:value="value", @input="handlePropertyChange(key, $event)", size="small")
 
 </template>
 <script>
@@ -52,6 +55,14 @@ import screenData from './_screens.js'
 import Interact from 'interactjs'
 import _throttle from 'lodash/throttle'
 
+function cssToObject(cssText) {
+  return cssText.split(';').reduce((accum, item) => {
+    let [ key, value ] = item.split(':').map(i => i.trim())
+    accum[key] = value
+    return accum
+  }, {})
+}
+
 export default {
   name: "banner-compose",
   data() {
@@ -65,7 +76,8 @@ export default {
         height: 1080
       },
       virtualScreenHeight: 400,
-      currScreenIdx: 0
+      currScreenIdx: 0,
+      style: ''
     };
   },
   components: {
@@ -90,6 +102,14 @@ export default {
     },
     currNode() {
       return this.findNode(this.currEditingUUID)
+    },
+    propertyForm: {
+      get() {
+        if (!this.currNode) return {}
+        let res = {}
+        res = cssToObject(this.currNode.props.style)
+        return res
+      }
     }
   },
   mounted() {
@@ -104,6 +124,15 @@ export default {
         height = actualWidth / this.ratio;
       }
       this.virtualScreenHeight = height;
+    },
+    handlePropertyChange(key, value){
+      const cssObj = cssToObject(this.currNode.props.style)
+      cssObj[key] = value
+      const newCss = Object.keys(cssObj).reduce((accum, key) => {
+         accum += `${key}:${cssObj[key] || ''};`
+         return accum
+      }, '')
+      this.currNode.props.style = newCss
     },
     getContent() {
       this.$refs.virtualScreen.innerHTML = ''
@@ -142,7 +171,6 @@ export default {
           // 添加事件
           dom.addEventListener('mousedown', e => {
             this.currEditingUUID = node.uuid
-            console.log(this.findNode(node.uuid))
           })
 
           // 初始化拖拽
@@ -168,6 +196,7 @@ export default {
         this.getVirtualScreenHeight();
         this.getContent();
         const self = this
+        // 点击空白区域清除选中的node
         this.$refs.virtualScreen.addEventListener('click', function(e) {
           if (e.target.className === 'virtual-screen') {
             self.currEditingUUID = ''
@@ -190,7 +219,19 @@ export default {
             left: "200px",
             props: {
               className: "banner-btn",
-              css: "color: blue"
+              style: `
+                background: #857dd1;
+                width: 200px;
+                height: 50px;
+                border-radius:25px;
+                text-align:center;
+                line-height: 50px;
+                padding: 0;
+                border: 0;
+                outline:0;
+                color: #fff;
+                font-size: 20px;
+                font-weight: bold`
             },
             children: "请输入按钮文字"
           }
@@ -251,7 +292,6 @@ export default {
       },
       deep: true
     },
-
     locale() {
       this.getContent();
     }
@@ -300,4 +340,14 @@ export default {
 .props-panel
   border: 1px solid
   padding: 10px
+  .form-item
+    margin-bottom: 7px
+    .el-input
+      width: 150px !important
+    span
+      display: inline-block
+      vertical-align: middle
+      width: 80px
+      margin-right: 10px
+      text-align: right
 </style>

@@ -11,7 +11,7 @@ export default [
           left: "50px",
           props: {
             className: "banner-btn",
-            css: "color: red"
+            style: "color: red"
           },
           children: "welcome to beijing"
         },
@@ -22,7 +22,7 @@ export default [
           left: "70px",
           props: {
             className: "banner-text",
-            style: "color: blue"
+            style: "color: blue;background: gray;border-radius: 10px"
           },
           children: "this is good"
         }
@@ -38,7 +38,7 @@ export default [
           left: "50px",
           props: {
             className: "banner-btn",
-            css: "color: green"
+            style: "color: green"
           },
           children: "北京欢迎你"
         },
@@ -68,7 +68,7 @@ export default [
           left: "10px",
           props: {
             className: "banner-btn",
-            css: "color: red"
+            style: "color: red"
           },
           children: "welcome to beijing"
         },
@@ -95,7 +95,7 @@ export default [
           left: "60px",
           props: {
             className: "banner-btn",
-            css: "color: green"
+            style: "color: green"
           },
           children: "北京欢迎你"
         },
