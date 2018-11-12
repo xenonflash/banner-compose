@@ -35,6 +35,12 @@
           el-input(size="small", v-model="currScreen[locale].src")
       hr
       template(v-if="currNode")
+        .form-item
+          span top
+          el-input(v-model="currNode.top")
+        .form-item
+          span left
+          el-input(v-model="currNode.left")
         .form-item(v-for="(value, key) in propertyForm")
           span {{key}}
           el-input(:value="value", @input="handlePropertyChange(key, $event)", size="small")
