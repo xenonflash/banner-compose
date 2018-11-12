@@ -202,6 +202,7 @@ export default {
         this.getVirtualScreenHeight();
         this.getContent();
         const self = this
+        window.addEventListener('resize', _throttle(this.init.bind(this),300))
         // 点击空白区域清除选中的node
         this.$refs.virtualScreen.addEventListener('click', function(e) {
           if (e.target.className === 'virtual-screen') {
