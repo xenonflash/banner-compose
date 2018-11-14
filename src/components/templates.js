@@ -21,6 +21,28 @@ export const buttonTpl = {
   },
   children: "请输入按钮文字"
 }
+export const textTpl = {
+  type: "text",
+  styleObj: {
+    top: "100px",
+    left: "200px",
+    background: 'rgba(255,255,255,.3)',
+    width: '100px',
+    height: '50px',
+    borderRadius: '2px',
+    textAlign: 'left',
+    lineHeight: '20px',
+    padding: '0',
+    border: '0',
+    outline: '0',
+    color: 'green',
+    fontSize: '20px',
+  },
+  props: {
+    className: "banner-text",
+  },
+  children: "请输入文字"
+}
 
 export const imageTpl = {
   type: "image",
@@ -36,6 +58,6 @@ export const imageTpl = {
   },
   props: {
     src: require('../assets/default-img.png'),
-    className: "banner-btn",
+    className: "banner-img",
   }
 }

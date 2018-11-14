@@ -45,14 +45,15 @@
             .form-item(v-for="(value, key) in currNode.props")
               span {{key}}
               el-input(v-model="currNode.props[key]",  size="mini")
-            .form-item(v-if="currNode.type=='button'")
+            .form-item(v-if="currNode.type=='button' || currNode.type=='text'")
               span text
               el-input(type="textarea", v-model="currNode.children",size="mini")
           el-tab-pane(label="style")
             .form-item(v-for="(value, key) in currNode.styleObj")
               span {{key}}
               el-input(v-model="currNode.styleObj[key]",  size="mini")
-
+          el-tab-pane(label="animation")
+            p reserved
 </template>
 <script>
 import ElCol from "element-ui/lib/col.js";
@@ -71,7 +72,7 @@ import screenData from './_screens.js'
 import Interact from 'interactjs'
 import _throttle from 'lodash/throttle'
 import _cloneDeep from 'lodash/cloneDeep'
-import { buttonTpl, imageTpl } from './templates'
+import { buttonTpl, imageTpl, textTpl} from './templates'
 
 function cssToObject(cssText) {
   return cssText.split(';').reduce((accum, item) => {
@@ -246,7 +247,8 @@ export default {
           elem = _cloneDeep(buttonTpl)
           break
         case "text":
-          elem = {};
+          elem = _cloneDeep(textTpl)
+          break
         case 'image':
           elem = _cloneDeep(imageTpl)
       }
