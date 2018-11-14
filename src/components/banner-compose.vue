@@ -43,7 +43,7 @@
           el-input(v-model="currNode.left")
         .form-item(v-for="(value, key) in propertyForm")
           span {{key}}
-          el-input(:value="value", @input="handlePropertyChange(key, $event)", size="small")
+          el-input(v-model="currNode.styleObj[key]",  size="small")
 
 </template>
 <script>
@@ -67,6 +67,16 @@ function cssToObject(cssText) {
     accum[key] = value
     return accum
   }, {})
+}
+function objectToCss(obj) {
+  let str = ''
+  for(let key in obj) {
+    const cssName = key.replace(/[A-Z]/g, (kwd) => {
+      return '-' + kwd.toLowerCase()
+    })
+    str += `${cssName}:${obj[key] || ''};`
+  }
+  return str
 }
 
 export default {
@@ -109,13 +119,9 @@ export default {
     currNode() {
       return this.findNode(this.currEditingUUID)
     },
-    propertyForm: {
-      get() {
-        if (!this.currNode) return {}
-        let res = {}
-        res = cssToObject(this.currNode.props.style)
-        return res
-      }
+    propertyForm() {
+      if (!this.currNode) return {}
+      return this.currNode.styleObj
     }
   },
   mounted() {
@@ -130,15 +136,6 @@ export default {
         height = actualWidth / this.ratio;
       }
       this.virtualScreenHeight = height;
-    },
-    handlePropertyChange(key, value){
-      const cssObj = cssToObject(this.currNode.props.style)
-      cssObj[key] = value
-      const newCss = Object.keys(cssObj).reduce((accum, key) => {
-         accum += `${key}:${cssObj[key] || ''};`
-         return accum
-      }, '')
-      this.currNode.props.style = newCss
     },
     getContent() {
       this.$refs.virtualScreen.innerHTML = ''
@@ -165,10 +162,10 @@ export default {
             position: absolute;
             top: ${node.top};
             left: ${node.left};
-            padding: 20px;
             outline: 0;
             z-index: ${zIndex};
-          ` + node.props.style;
+            ${objectToCss(node.styleObj)}
+          `;
           // 类样式
           dom.className = node.props.className + " " + node.uuid;
           // 设置interactjs
@@ -224,21 +221,22 @@ export default {
             uuid,
             top: "100px",
             left: "200px",
+            styleObj: {
+              background: '#857dd1',
+              width: '200px',
+              height: '50px',
+              borderRadius:'25px',
+              textAlign:'center',
+              lineHeight: '50px',
+              padding: '0',
+              border: '0',
+              outline:'0',
+              color: '#fff',
+              fontSize: '20px',
+              fontWeight: 'bold'
+            },
             props: {
               className: "banner-btn",
-              style: `
-                background: #857dd1;
-                width: 200px;
-                height: 50px;
-                border-radius:25px;
-                text-align:center;
-                line-height: 50px;
-                padding: 0;
-                border: 0;
-                outline:0;
-                color: #fff;
-                font-size: 20px;
-                font-weight: bold`
             },
             children: "请输入按钮文字"
           }
@@ -266,6 +264,12 @@ export default {
           const node = self.findNode(self.currEditingUUID)
           node.top = parseFloat(node.top) + dy +'px'
           node.left = parseFloat(node.left) + dx + 'px'
+        })
+      }).resizable({
+        onmove: _throttle(function({ dx, dy }) {
+          const node = self.findNode(self.currEditingUUID)
+          node.styleObj.width = parseFloat(node.styleObj.width) + dx +'px'
+          node.styleObj.height = parseFloat(node.styleObj.height) + dy + 'px'
         })
       })
     },
