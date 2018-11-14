@@ -157,8 +157,7 @@ export default {
           const type = typeMap[node.type];
           const dom = document.createElement(type);
           //初始化样式
-          dom.style.cssText =
-            `
+          dom.style.cssText =`
             position: absolute;
             top: ${node.top};
             left: ${node.left};
@@ -233,7 +232,8 @@ export default {
               outline:'0',
               color: '#fff',
               fontSize: '20px',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              padding: '20px'
             },
             props: {
               className: "banner-btn",
@@ -260,17 +260,18 @@ export default {
     bindInteract(dom) {
       const self = this
       Interact(dom).draggable({
-        onmove: _throttle(function({ dx, dy }) {
+        onmove: function({ dx, dy }) {
           const node = self.findNode(self.currEditingUUID)
           node.top = parseFloat(node.top) + dy +'px'
           node.left = parseFloat(node.left) + dx + 'px'
-        })
-      }).resizable({
-        onmove: _throttle(function({ dx, dy }) {
+        }
+      })
+      Interact(dom).resizable({
+        onmove: function({ dx, dy }) {
           const node = self.findNode(self.currEditingUUID)
           node.styleObj.width = parseFloat(node.styleObj.width) + dx +'px'
           node.styleObj.height = parseFloat(node.styleObj.height) + dy + 'px'
-        })
+        }
       })
     },
     //根据 uuid 获取node
