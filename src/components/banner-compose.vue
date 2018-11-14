@@ -12,6 +12,7 @@
           :class="{'active': currScreenIdx === index}",
           :style="`background-image: url(${screen[locale].src})`"
         )
+        li.add-screen(@click="addScreen") +
     el-col(:span="14").stage
       .info-bar {{screenResoution.width}}px * {{screenResoution.height}}
       .preview
@@ -60,6 +61,8 @@ import ElRadio from 'element-ui/lib/radio'
 import screenData from './_screens.js'
 import Interact from 'interactjs'
 import _throttle from 'lodash/throttle'
+import _cloneDeep from 'lodash/cloneDeep'
+import { buttonTpl } from './templates'
 
 function cssToObject(cssText) {
   return cssText.split(';').reduce((accum, item) => {
@@ -207,6 +210,20 @@ export default {
         })
       }, 100);
     },
+    addScreen() {
+      const newScreen = {
+        bgType: "image",
+        en: {
+          src: "",
+          children: []
+        },
+        zh: {
+          src: "",
+          children: []
+        }
+      }
+      this.screens.push(newScreen)
+    },
     removeElement(uuid) {
 
     },
@@ -215,37 +232,14 @@ export default {
       const uuid = Math.random().toString().replace('0.','')
       switch (type) {
         case "button":
-          elem = {
-            type: "button",
-            uuid,
-            top: "100px",
-            left: "200px",
-            styleObj: {
-              background: '#857dd1',
-              width: '200px',
-              height: '50px',
-              borderRadius:'25px',
-              textAlign:'center',
-              lineHeight: '50px',
-              padding: '0',
-              border: '0',
-              outline:'0',
-              color: '#fff',
-              fontSize: '20px',
-              fontWeight: 'bold',
-              padding: '20px'
-            },
-            props: {
-              className: "banner-btn",
-            },
-            children: "请输入按钮文字"
-          }
+          elem = _cloneDeep(buttonTpl)
           break
         case "text":
           elem = {};
         case 'image':
           elem = {}
       }
+      elem.uuid = uuid
       if (elem) {
         if (this.currNode ) {
           if (typeof this.currNode.children === 'string') {
@@ -338,6 +332,11 @@ export default {
     background-position: center
     &.active
       border-color: red
+    &.add-screen
+      font-size: 40px
+      text-align: center
+      color: #ddd
+
 .stage
   min-height: 500px
   border: 1px solid
