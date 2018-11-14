@@ -1,8 +1,8 @@
 export const buttonTpl = {
   type: "button",
-  top: "100px",
-  left: "200px",
   styleObj: {
+    top: "100px",
+    left: "200px",
     background: '#ffe500',
     width: '200px',
     height: '50px',
@@ -20,4 +20,22 @@ export const buttonTpl = {
     className: "banner-btn",
   },
   children: "请输入按钮文字"
+}
+
+export const imageTpl = {
+  type: "image",
+  styleObj: {
+    top: "100px",
+    left: "200px",
+    width: '100px',
+    height: '100px',
+    borderRadius: '25px',
+    padding: '0',
+    border: '0',
+    outline: '0'
+  },
+  props: {
+    src: require('../assets/default-img.png'),
+    className: "banner-btn",
+  }
 }

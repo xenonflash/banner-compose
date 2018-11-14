@@ -40,18 +40,18 @@
           el-input(size="small", v-model="currScreen[locale].src")
       hr
       template(v-if="currNode")
-        .form-item
-          span top
-          el-input(v-model="currNode.top", size="mini")
-        .form-item
-          span left
-          el-input(v-model="currNode.left", size="mini")
-        .form-item(v-if="currNode.type=='button'")
-          span text
-          el-input(type="textarea", v-model="currNode.children",size="mini")
-        .form-item(v-for="(value, key) in propertyForm")
-          span {{key}}
-          el-input(v-model="currNode.styleObj[key]",  size="mini")
+        el-tabs()
+          el-tab-pane(label="props")
+            .form-item(v-for="(value, key) in currNode.props")
+              span {{key}}
+              el-input(v-model="currNode.props[key]",  size="mini")
+            .form-item(v-if="currNode.type=='button'")
+              span text
+              el-input(type="textarea", v-model="currNode.children",size="mini")
+          el-tab-pane(label="style")
+            .form-item(v-for="(value, key) in currNode.styleObj")
+              span {{key}}
+              el-input(v-model="currNode.styleObj[key]",  size="mini")
 
 </template>
 <script>
@@ -65,11 +65,13 @@ import ElDialog from "element-ui/lib/dialog";
 import ElSwitch from 'element-ui/lib/switch'
 import ElRadioGroup from 'element-ui/lib/radio-group'
 import ElRadio from 'element-ui/lib/radio'
+import ElTabs from 'element-ui/lib/tabs'
+import ElTabPane from 'element-ui/lib/tab-pane'
 import screenData from './_screens.js'
 import Interact from 'interactjs'
 import _throttle from 'lodash/throttle'
 import _cloneDeep from 'lodash/cloneDeep'
-import { buttonTpl } from './templates'
+import { buttonTpl, imageTpl } from './templates'
 
 function cssToObject(cssText) {
   return cssText.split(';').reduce((accum, item) => {
@@ -116,7 +118,9 @@ export default {
     ElSwitch,
     ElRadio,
     ElRadioGroup,
-    ElInput
+    ElInput,
+    ElTabs,
+    ElTabPane
   },
   computed: {
     ratio() {
@@ -129,10 +133,6 @@ export default {
     currNode() {
       return this.findNode(this.currEditingUUID)
     },
-    propertyForm() {
-      if (!this.currNode) return {}
-      return this.currNode.styleObj
-    }
   },
   mounted() {
     this.init();
@@ -169,14 +169,18 @@ export default {
           //初始化样式
           dom.style.cssText =`
             position: absolute;
-            top: ${node.top};
-            left: ${node.left};
             outline: 0;
             z-index: ${zIndex};
             ${objectToCss(node.styleObj)}
           `;
           // 类样式
-          dom.className = node.props.className + " " + node.uuid;
+          for (let propsName in node.props) {
+            if (propsName === 'className') {
+              dom.className = node.props.className + " " + node.uuid;
+              continue
+            }
+            dom.setAttribute(propsName, node.props[propsName])
+          }
           // 设置interactjs
           parentNode.appendChild(dom);
 
@@ -244,7 +248,7 @@ export default {
         case "text":
           elem = {};
         case 'image':
-          elem = {}
+          elem = _cloneDeep(imageTpl)
       }
       if (elem) {
         elem.uuid = uuid
@@ -263,17 +267,21 @@ export default {
       Interact(dom).draggable({
         onmove: function({ dx, dy }) {
           const node = self.findNode(self.currEditingUUID)
-          node.top = (parseFloat(node.top) + dy).toFixed(2) +'px'
-          node.left = (parseFloat(node.left) + dx).toFixed(2) + 'px'
+          node.styleObj.top = (parseFloat(node.styleObj.top) + dy).toFixed(2) +'px'
+          node.styleObj.left = (parseFloat(node.styleObj.left) + dx).toFixed(2) + 'px'
         }
       })
       Interact(dom).resizable({
         edges: {
           'top': true,
           'left': true,
-          'bottom': true
+          'bottom': true,
+          right:true
         },
-        onmove: function({ dx, dy }) {
+        onmove: function(e) {
+          console.log(e)
+          const dx = e.dx
+          const dy = e.dy
           const node = self.findNode(self.currEditingUUID)
           node.styleObj.width = (parseFloat(node.styleObj.width) + dx).toFixed(2) +'px'
           node.styleObj.height = (parseFloat(node.styleObj.height) + dy).toFixed(2) + 'px'
