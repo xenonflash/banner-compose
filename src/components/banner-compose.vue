@@ -14,13 +14,17 @@
         )
         li.add-screen(@click="addScreen") +
     el-col(:span="14").stage
-      .info-bar {{screenResoution.width}}px * {{screenResoution.height}}
+      .info-bar
+        el-input(v-model='screenResoution.width', size="mini")
+        span *
+        el-input(v-model="screenResoution.height", size="mini")
       .preview
         .virtual-screen(
           ref="virtualScreen",
           :style="`height:${virtualScreenHeight}px; background: url(${currScreen[locale].src}) no-repeat center/cover`"
         )
       .operation
+        p components
         el-button(@click="addElement('button')") add button
         el-button(@click="addElement('text')") add text
         el-button(@click="addElement('image')") add image
@@ -38,13 +42,16 @@
       template(v-if="currNode")
         .form-item
           span top
-          el-input(v-model="currNode.top")
+          el-input(v-model="currNode.top", size="mini")
         .form-item
           span left
-          el-input(v-model="currNode.left")
+          el-input(v-model="currNode.left", size="mini")
+        .form-item(v-if="currNode.type=='button'")
+          span text
+          el-input(type="textarea", v-model="currNode.children",size="mini")
         .form-item(v-for="(value, key) in propertyForm")
           span {{key}}
-          el-input(v-model="currNode.styleObj[key]",  size="small")
+          el-input(v-model="currNode.styleObj[key]",  size="mini")
 
 </template>
 <script>
@@ -239,8 +246,8 @@ export default {
         case 'image':
           elem = {}
       }
-      elem.uuid = uuid
       if (elem) {
+        elem.uuid = uuid
         if (this.currNode ) {
           if (typeof this.currNode.children === 'string') {
             return alert('cannot add element to ' + this.currNode.type)
@@ -256,15 +263,20 @@ export default {
       Interact(dom).draggable({
         onmove: function({ dx, dy }) {
           const node = self.findNode(self.currEditingUUID)
-          node.top = parseFloat(node.top) + dy +'px'
-          node.left = parseFloat(node.left) + dx + 'px'
+          node.top = (parseFloat(node.top) + dy).toFixed(2) +'px'
+          node.left = (parseFloat(node.left) + dx).toFixed(2) + 'px'
         }
       })
       Interact(dom).resizable({
+        edges: {
+          'top': true,
+          'left': true,
+          'bottom': true
+        },
         onmove: function({ dx, dy }) {
           const node = self.findNode(self.currEditingUUID)
-          node.styleObj.width = parseFloat(node.styleObj.width) + dx +'px'
-          node.styleObj.height = parseFloat(node.styleObj.height) + dy + 'px'
+          node.styleObj.width = (parseFloat(node.styleObj.width) + dx).toFixed(2) +'px'
+          node.styleObj.height = (parseFloat(node.styleObj.height) + dy).toFixed(2) + 'px'
         }
       })
     },
@@ -300,6 +312,12 @@ export default {
     },
     locale() {
       this.getContent();
+    },
+    screenResoution: {
+      handler: function(val) {
+        this.getVirtualScreenHeight()
+      },
+      deep: true
     }
   }
 };
@@ -339,11 +357,14 @@ export default {
 
 .stage
   min-height: 500px
-  border: 1px solid
+  border: 1px solid #ddd
+  padding: 10px
   .info-bar
     text-align: center
+    .el-input
+      width: 80px
   .preview
-    padding: 20px
+    padding: 5px
     .virtual-screen
       transition: all 300ms ease-out
       border: 2px solid #ddd
@@ -358,7 +379,7 @@ export default {
     span
       display: inline-block
       vertical-align: middle
-      width: 80px
+      width: 100px
       margin-right: 10px
       text-align: right
 </style>

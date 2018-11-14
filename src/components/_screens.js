@@ -2,13 +2,13 @@ export default [
   {
     bgType: "image",
     en: {
-      src: "https://files.lingobus.com/material/image/vipkid-birthday-banner-en-3rd-1539678807145.jpg",
+      src: "https://files.lingobus.com/material/image/pp-black-friday-banner-en@2x-1542193570500.jpg",
       children: [
 
       ]
     },
     zh: {
-      src: "https://files.lingobus.com/material/image/vipkid-birthday-banner-en-3rd-1539678807145.jpg",
+      src: "https://files.lingobus.com/material/image/pp-black-friday-banner-zh@2x-1542193583770.jpg",
       children: [
 
       ]
